@@ -22,6 +22,11 @@ namespace CREST {
         float m_excess_precipitation;
         float m_reservoir;
     };
+
+    inline float Tier::GetExcessPrecipitation() const
+    {
+        return m_excess_precipitation;
+    }
 }
 
 #endif //CREST_TIER_H

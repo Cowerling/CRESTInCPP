@@ -15,11 +15,6 @@ Tier::Tier()
 Tier::~Tier()
 {}
 
-float Tier::GetExcessPrecipitation() const
-{
-    return m_excess_precipitation
-}
-
 void Tier::SetExcessPrecipitation(float excess_precipitation)
 {
     m_excess_precipitation = excess_precipitation;
