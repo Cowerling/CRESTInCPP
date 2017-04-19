@@ -15,12 +15,28 @@ namespace CREST {
 
         void RunoffGenerationProcess(float max_water_capacity, float evaporation_multiplier, float impervious_ratio,
                                      float exponent, float hydra_conductivity);
+        inline int GetX() const;
+        void SetX(int x);
+        inline int GetY() const;
+        void SetY(int y);
+
     protected:
         Tier m_surface_tier, m_ground_tier;
         float m_precipitation;
         float m_potential_evaporation, m_actual_evaporation;
         float m_soil_water; //refers to the initial value of soil water. This is a percentage of the pWm and should therefore vary between 0 and 100.
+        int m_x, m_y;
     };
+
+    inline int Cell::GetX() const
+    {
+        return m_x;
+    }
+
+    inline int Cell::GetY() const
+    {
+        return m_y;
+    }
 }
 
 #endif //CREST_CELL_H

@@ -18,12 +18,12 @@ namespace CREST {
 
         int GetXSize() const;
         int GetYSize() const;
-        inline const OGRSpatialReference& GetSpatialReference() const;
+        inline double GetXResolution() const;
+        inline double GetYResolution() const;
         const Cell& operator()(int x, int y) const;
         Cell& operator()(int x, int y);
         void SetFlowDirection(GDALDataset *ddm, GDALDataset *fam);
         void FindCellFlowRoute(int x, int y);
-
 
     private:
         void FindCellFlowRoute(Cell &cell);
@@ -32,15 +32,17 @@ namespace CREST {
     protected:
         Cell **m_cells;
         GDALDataset *m_dem, *m_ddm, *m_fam;
-        OGRSpatialReference m_spatial_reference;
-
-    private:
-        const static char *DEFAULT_EPSG = "EPSG:4326";
+        double m_x_resolution, m_y_resolution;
     };
 
-    inline const OGRSpatialReference& Basin::GetSpatialReference() const
+    inline double Basin::GetXResolution() const
     {
-        return m_spatial_reference;
+        return m_x_resolution;
+    }
+
+    inline double Basin::GetYResolution() const
+    {
+        return m_y_resolution;
     }
 }
 

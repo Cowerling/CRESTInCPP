@@ -10,6 +10,7 @@ using namespace CREST;
 Cell::Cell()
 {
     m_precipitation = m_potential_evaporation = m_actual_evaporation = m_soil_water = 0;
+    m_x = m_y = -1;
 }
 
 Cell::~Cell()
@@ -69,4 +70,14 @@ void Cell::RunoffGenerationProcess(float max_water_capacity, float evaporation_m
     }
 
     m_soil_water = new_soil_water;
+}
+
+void Cell::SetX(int x)
+{
+    m_x = x;
+}
+
+void Cell::SetY(int y)
+{
+    m_y = y;
 }
