@@ -17,7 +17,6 @@ namespace CREST {
     protected:
         Tier *m_next_tier;
         Tier *m_first_destination_tier, *m_last_destination_tier;
-        float m_flow_time;
         float m_water_access_ratio;
         float m_excess_precipitation;
         float m_reservoir;

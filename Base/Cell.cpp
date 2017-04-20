@@ -81,3 +81,8 @@ void Cell::SetY(int y)
 {
     m_y = y;
 }
+
+void Cell::SetFlowTime(float flow_time)
+{
+    m_flow_time = flow_time;
+}

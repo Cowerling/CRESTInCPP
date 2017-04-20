@@ -38,6 +38,11 @@ namespace CREST {
         double m_x_resolution, m_y_resolution;
 
         double m_dem_correction;    //refers to the change in DEM used for calculating the slope when the DEM for the downstream cell is higher than the upstream or the downstream cell is a nodata/outside region cell.
+        double m_vegetation_speed_factor;
+        double m_slope_speed_multiplier;    //refers to the slope flow speed multiplier.
+        double m_slope_speed_exponent;  //refers to the slope flow speed exponent.
+        double m_channel_accumulation;  //refers to the flow accumulation needed for a cell to be marked as a channel cell.
+        double m_channel_speed_multiplier;  //refers to the multiplier used to convert slope flow speed to channel flow speed.
     };
 
     inline double Basin::GetXResolution() const

@@ -2,6 +2,7 @@
 // Created by cowerling on 17-4-19.
 //
 #include <cstring>
+#include <cmath>
 
 #include "Basin.h"
 #include "../Spatial/SpatialDriver.h"
@@ -9,7 +10,12 @@
 using namespace CREST;
 
 Basin::Basin(Raster *dem) : m_cells(nullptr), m_x_resolution(0), m_y_resolution(0), m_dem(dem),
-                            m_dem_correction(1.259213)
+                            m_dem_correction(1.259213),
+                            m_vegetation_speed_factor(1),
+                            m_slope_speed_multiplier(107.67186),
+                            m_slope_speed_exponent(0.30501),
+                            m_channel_accumulation(54.522789),
+                            m_channel_speed_multiplier(1.129872)
 {
     if (m_dem == nullptr) return;
 
@@ -111,36 +117,59 @@ void Basin::CaculateFlowTime(Cell &cell)
         case 1:
             next_x = cell.GetX() + 1;
             next_y = cell.GetY();
-            if (cell.GetX() + 1 < GetXSize()) length = m_x_resolution;
+            length = m_x_resolution;
             break;
         case 2:
-            if (cell.GetX() + 1 < GetXSize() && cell.GetY() - 1 >= 0) length = std::sqrt(m_x_resolution * m_x_resolution + m_y_resolution + m_y_resolution);
+            next_x = cell.GetX() + 1;
+            next_y = cell.GetY() - 1;
+            length = std::sqrt(m_x_resolution * m_x_resolution + m_y_resolution + m_y_resolution);
             break;
         case 4:
-            if (cell.GetY() - 1 >= 0) length = m_y_resolution;
+            next_x = cell.GetX();
+            next_y = cell.GetY() - 1;
+            length = m_y_resolution;
             break;
         case 8:
-            if (cell.GetX() - 1 >= 0 && cell.GetY() - 1 >= 0) length = std::sqrt(m_x_resolution * m_x_resolution + m_y_resolution + m_y_resolution);
+            next_x = cell.GetX() - 1;
+            next_y = cell.GetY() - 1;
+            length = std::sqrt(m_x_resolution * m_x_resolution + m_y_resolution + m_y_resolution);
             break;
         case 16:
-            if (cell.GetX() - 1 >= 0) length = m_x_resolution;
+            next_x = cell.GetX() - 1;
+            next_y = cell.GetY();
+            length = m_x_resolution;
             break;
         case 32:
-            if (cell.GetX() - 1 >= 0 && cell.GetY() + 1 < GetYSize()) length = std::sqrt(m_x_resolution * m_x_resolution + m_y_resolution + m_y_resolution);
+            next_x = cell.GetX() - 1;
+            next_y = cell.GetY() + 1;
+            length = std::sqrt(m_x_resolution * m_x_resolution + m_y_resolution + m_y_resolution);
             break;
         case 64:
-            if (cell.GetY() + 1 < GetYSize()) length = m_y_resolution;
+            next_x = cell.GetX();
+            next_y = cell.GetY() + 1;
+            length = m_y_resolution;
             break;
         case 128:
-            if (cell.GetX() + 1 < GetXSize() && cell.GetY() + 1 < GetYSize()) length = std::sqrt(m_x_resolution * m_x_resolution + m_y_resolution + m_y_resolution);
+            next_x = cell.GetX() + 1;
+            next_y = cell.GetY() + 1;
+            length = std::sqrt(m_x_resolution * m_x_resolution + m_y_resolution + m_y_resolution);
             break;
         default:
             break;
     }
 
-    if (m_dem->IsNoData(cell.GetX(), cell.GetY())) length = 0;
+    if (next_x < 0 || next_x >= GetXSize() || next_y < 0 || next_y >= GetYSize() || m_dem->IsNoData(cell.GetX(), cell.GetY())) length = 0;
 
+    double slope = m_dem_correction / m_y_resolution;
+    if (length != 0)
+        slope = m_dem->FindValue(cell.GetX(), cell.GetY()) > m_dem->FindValue(next_x, next_y) ? (m_dem->FindValue(cell.GetX(), cell.GetY()) - m_dem->FindValue(next_x, next_y)) / length : m_dem_correction / length;
 
+    double speed = m_slope_speed_multiplier * m_vegetation_speed_factor * std::pow(slope, m_slope_speed_exponent);
+    if (m_fam->FindValue(cell.GetX(), cell.GetY()) > m_channel_accumulation) speed *= m_channel_speed_multiplier;
+
+    if (length == 0) length = m_y_resolution;
+
+    cell.SetFlowTime(length / speed / SpatialDriver::HOUR_TO_SECOND);
 }
 
 void Basin::SetDEMCorrection(double dem_correction)

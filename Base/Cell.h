@@ -19,6 +19,8 @@ namespace CREST {
         void SetX(int x);
         inline int GetY() const;
         void SetY(int y);
+        inline float GetFlowTime() const;
+        void SetFlowTime(float flow_time);
 
     protected:
         Tier m_surface_tier, m_ground_tier;
@@ -26,6 +28,7 @@ namespace CREST {
         float m_potential_evaporation, m_actual_evaporation;
         float m_soil_water; //refers to the initial value of soil water. This is a percentage of the pWm and should therefore vary between 0 and 100.
         int m_x, m_y;
+        float m_flow_time;
     };
 
     inline int Cell::GetX() const
@@ -36,6 +39,11 @@ namespace CREST {
     inline int Cell::GetY() const
     {
         return m_y;
+    }
+
+    inline float Cell::GetFlowTime() const
+    {
+        return m_flow_time;
     }
 }
 

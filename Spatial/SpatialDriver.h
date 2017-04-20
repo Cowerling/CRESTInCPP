@@ -18,6 +18,7 @@ namespace CREST {
         static const double EARTH_RADIUS = 6367000;
         static const double PI = 3.14159265359;
         static const double FLOAT_BIAS = 1e-6;
+        static const int HOUR_TO_SECOND = 3600;
     };
 }
 
