@@ -9,11 +9,12 @@
 #include <ogrsf_frmts.h>
 
 #include "Cell.h"
+#include "Raster.h"
 
 namespace CREST {
     class Basin {
     public:
-        Basin(GDALDataset *dem);
+        Basin(Raster *dem);
         ~Basin();
 
         int GetXSize() const;
@@ -22,8 +23,10 @@ namespace CREST {
         inline double GetYResolution() const;
         const Cell& operator()(int x, int y) const;
         Cell& operator()(int x, int y);
-        void SetFlowDirection(GDALDataset *ddm, GDALDataset *fam);
+        void SetFlowDirection(Raster *ddm, Raster *fam);
         void FindCellFlowRoute(int x, int y);
+
+        void SetDEMCorrection(double dem_correction);
 
     private:
         void FindCellFlowRoute(Cell &cell);
@@ -31,8 +34,10 @@ namespace CREST {
 
     protected:
         Cell **m_cells;
-        GDALDataset *m_dem, *m_ddm, *m_fam;
+        Raster *m_dem, *m_ddm, *m_fam;
         double m_x_resolution, m_y_resolution;
+
+        double m_dem_correction;    //refers to the change in DEM used for calculating the slope when the DEM for the downstream cell is higher than the upstream or the downstream cell is a nodata/outside region cell.
     };
 
     inline double Basin::GetXResolution() const
