@@ -7,23 +7,25 @@
 
 using namespace CREST;
 
-Cell::Cell()
+Cell::Cell() : m_flow_time(-1), m_next_cell(nullptr),
+               m_soil_water(0),
+               m_runoff(0),
+               m_actual_evaporation(0)
 {
-    m_precipitation = m_potential_evaporation = m_actual_evaporation = m_soil_water = 0;
     m_x = m_y = -1;
 }
 
 Cell::~Cell()
 {}
 
-void Cell::RunoffGenerationProcess(float max_water_capacity, float evaporation_multiplier, float impervious_ratio,
+void Cell::RunoffGenerationProcess(float precipitation, float potential_evaporation, float max_water_capacity, float evaporation_multiplier, float impervious_ratio,
                                    float exponent, float hydra_conductivity)
 {
-    double evaporation = m_potential_evaporation * evaporation_multiplier, runoff = 0, new_soil_water = 0;
+    double evaporation = potential_evaporation * evaporation_multiplier, runoff = 0, new_soil_water = 0;
 
-    if (m_precipitation > evaporation)
+    if (precipitation > evaporation)
     {
-        float precipitation_to_soil = (m_precipitation - evaporation) * (1 - impervious_ratio);
+        float precipitation_to_soil = (precipitation - evaporation) * (1 - impervious_ratio);
 
         if (m_soil_water < max_water_capacity)
         {
@@ -51,7 +53,7 @@ void Cell::RunoffGenerationProcess(float max_water_capacity, float evaporation_m
         else
             m_ground_tier.SetExcessPrecipitation(infiltrate_water);
 
-        m_surface_tier.SetExcessPrecipitation(runoff - m_ground_tier.GetExcessPrecipitation() + (m_precipitation - evaporation) * impervious_ratio);
+        m_surface_tier.SetExcessPrecipitation(runoff - m_ground_tier.GetExcessPrecipitation() + (precipitation - evaporation) * impervious_ratio);
         m_actual_evaporation = evaporation;
     }
     else
@@ -59,7 +61,7 @@ void Cell::RunoffGenerationProcess(float max_water_capacity, float evaporation_m
         m_surface_tier.SetExcessPrecipitation(0);
         m_ground_tier.SetExcessPrecipitation(0);
 
-        float infiltrate_water = (evaporation - m_precipitation) * m_soil_water / max_water_capacity;
+        float infiltrate_water = (evaporation - precipitation) * m_soil_water / max_water_capacity;
 
         if (infiltrate_water < m_soil_water)
             new_soil_water = m_soil_water - infiltrate_water;
@@ -85,4 +87,19 @@ void Cell::SetY(int y)
 void Cell::SetFlowTime(float flow_time)
 {
     m_flow_time = flow_time;
+}
+
+void Cell::SetNextCell(Cell *next_cell)
+{
+    m_next_cell = next_cell;
+}
+
+void Cell::SetSoilWater(float soil_water)
+{
+    m_soil_water = soil_water;
+}
+
+void Cell::SetRunoff(float runoff)
+{
+    m_runoff = runoff;
 }

@@ -13,10 +13,16 @@ namespace CREST {
 
         inline float GetExcessPrecipitation() const;
         void SetExcessPrecipitation(float excess_precipitation);
+        inline float GetWaterAccessRatio() const;
+        void SetWaterAccessRatio(float water_access_ratio);
+        inline Tier* GetDestinationTier();
+        void SetDestinationTier(Tier *tier);
+        inline float GetReservoir() const;
+        void SetReservoir(float reservoir);
+        void AdjustDestinationReservoir(float discharge);
 
     protected:
-        Tier *m_next_tier;
-        Tier *m_first_destination_tier, *m_last_destination_tier;
+        Tier *m_destination_tier;
         float m_water_access_ratio;
         float m_excess_precipitation;
         float m_reservoir;
@@ -25,6 +31,21 @@ namespace CREST {
     inline float Tier::GetExcessPrecipitation() const
     {
         return m_excess_precipitation;
+    }
+
+    inline float Tier::GetWaterAccessRatio() const
+    {
+        return m_water_access_ratio;
+    }
+
+    inline Tier* Tier::GetDestinationTier()
+    {
+        return m_destination_tier;
+    }
+
+    inline float Tier::GetReservoir() const
+    {
+        return m_reservoir;
     }
 }
 

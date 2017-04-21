@@ -5,11 +5,18 @@
 #ifndef CREST_CORE_H
 #define CREST_CORE_H
 
+#include "../Base/Basin.h"
+
 namespace CREST {
     class Core {
     public:
-    protected:
+        Core(Raster *dem, Raster *ddm, Raster *fam);
 
+    private:
+        void SingleCaculate(Raster *precipitation, Raster *evaporation, float time_interval);
+
+    protected:
+        Basin *m_basin;
     };
 }
 
