@@ -69,6 +69,9 @@ namespace CREST {
         double m_surface_reservoir_discharge;    //refers to the overland reservoir discharge multiplier.
         double m_ground_reservoir_discharge; //refers to the interflow reservoir discharge multiplier.
         double m_initial_soil_water;    //refers to the initial value of soil water.refers to the initial value of soil water.
+
+    public:
+        friend class Core;
     };
 
     inline double Basin::GetXResolution() const

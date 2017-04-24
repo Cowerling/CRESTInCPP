@@ -16,11 +16,20 @@ void Core::SingleCaculate(Raster *precipitation, Raster *potential_evaporation, 
 {
     if (m_basin == nullptr) throw std::runtime_error("lack basin");
 
+    OGRSpatialReference spatial_reference = m_basin->m_dem->GetSpatialReference(),
+            precipitation_spatial_reference = precipitation->GetSpatialReference(),
+            potential_evaporation_spatial_reference = potential_evaporation->GetSpatialReference();
+
+    bool is_same_spatial_reference_precipitation = spatial_reference.IsSame(&precipitation_spatial_reference),
+            is_same_spatial_reference_potential_evaporation = spatial_reference.IsSame(&potential_evaporation_spatial_reference);
+
     for (int x = 0; x < m_basin->GetXSize(); x++)
     {
         for (int y = 0; y < m_basin->GetYSize(); y++)
         {
             if (!m_basin->IsValid(x, y)) continue;
+
+
 
             double precipitation_value = precipitation->FindValue(x, y) * time_interval;
             if (precipitation_value < 0) precipitation_value = 0;

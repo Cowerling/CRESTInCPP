@@ -89,3 +89,8 @@ OGRSpatialReference Raster::GetSpatialReference() const
 
     return spatial_reference;
 }
+
+void Raster::GetCoordinates(int x, int y, double &coordinate_x, double &coordinate_y)
+{
+    SpatialDriver::GetCoordinates(m_geo_transform, GetYSize(), x, y, coordinate_x, coordinate_y);
+}

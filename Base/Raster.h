@@ -22,6 +22,7 @@ namespace CREST {
         inline const double* GetGeotransform() const;
         OGRSpatialReference GetSpatialReference() const;
         virtual bool IsNoData(int x, int y) = 0;
+        void GetCoordinates(int x, int y, double &coordinate_x, double &coordinate_y);
 
     protected:
         Raster(GDALDataset *dataset, GDALDataType data_type);

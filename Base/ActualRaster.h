@@ -73,7 +73,10 @@ namespace CREST {
         int x, y;
         SpatialDriver::GetXYIndex(m_geo_transform, m_y_size, coordinate_x, coordinate_y, x, y);
 
-        return FindValue(x, y);
+        if (0 <= x && x < GetXSize() && 0 <= y && y <= GetYSize())
+            return FindValue(x, y);
+        else
+            return SpatialDriver::MIN_DOUBLE;
     }
 
     template<class T> virtual bool ActualRaster::IsNoData(int x, int y)
