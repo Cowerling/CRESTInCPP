@@ -16,13 +16,13 @@ namespace CREST {
         static void GetXYIndex(const double geo_transform[6], int y_size, double coordinate_x, double coordinate_y, int &x, int &y);
 
     public:
-        const static char *DEFAULT_EPSG = "EPSG:4326";
-        static const double EARTH_RADIUS = 6367000;
-        static const double PI = 3.14159265359;
-        static const double FLOAT_BIAS = 1e-6;
-        static const int HOUR_TO_SECOND = 3600;
-        static const double MIN_DOUBLE = std::numeric_limits<double>::min();
-        static const double MIN_FLOAT = std::numeric_limits<float>::min();
+        static const char *DEFAULT_EPSG;
+        static const double EARTH_RADIUS;
+        static const double PI;
+        static const double FLOAT_BIAS;
+        static const int HOUR_TO_SECOND;
+        static const double MIN_DOUBLE;
+        static const double MIN_FLOAT;
     };
 }
 

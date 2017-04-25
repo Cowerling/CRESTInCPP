@@ -5,6 +5,8 @@
 #ifndef CREST_ACTUALRASTER_H
 #define CREST_ACTUALRASTER_H
 
+#include <cmath>
+
 #include "Raster.h"
 #include "../Spatial/SpatialDriver.h"
 
@@ -25,15 +27,15 @@ namespace CREST {
         T *m_data;
     };
 
-    template<class T> ActualRaster::ActualRaster(GDALDataset *dataset, GDALDataType data_type) : Raster(dataset, data_type), m_data(nullptr)
+    template<class T> ActualRaster<T>::ActualRaster(GDALDataset *dataset, GDALDataType data_type) : Raster(dataset, data_type), m_data(nullptr)
     {}
 
-    template<class T> virtual ActualRaster::~ActualRaster()
+    template<class T> ActualRaster<T>::~ActualRaster()
     {
         delete[] m_data;
     }
 
-    template<class T> T ActualRaster::FindOriginalValue(int x, int y)
+    template<class T> T ActualRaster<T>::FindOriginalValue(int x, int y)
     {
         if (x < 0 || x >= m_dataset->GetRasterXSize() || y < 0 || y > m_dataset->GetRasterYSize())
         throw std::runtime_error("out of extent");
@@ -63,12 +65,12 @@ namespace CREST {
         return m_data[relative_y * m_x_search_size + relative_x];
     }
 
-    template<class T> virtual double ActualRaster::FindValue(int x, int y)
+    template<class T> double ActualRaster<T>::FindValue(int x, int y)
     {
         return (double)FindOriginalValue(x, y);
     }
 
-    template<class T> virtual double ActualRaster::SearchValue(double coordinate_x, double coordinate_y)
+    template<class T> double ActualRaster<T>::SearchValue(double coordinate_x, double coordinate_y)
     {
         int x, y;
         SpatialDriver::GetXYIndex(m_geo_transform, m_y_size, coordinate_x, coordinate_y, x, y);
@@ -79,9 +81,9 @@ namespace CREST {
             return SpatialDriver::MIN_DOUBLE;
     }
 
-    template<class T> virtual bool ActualRaster::IsNoData(int x, int y)
+    template<class T> bool ActualRaster<T>::IsNoData(int x, int y)
     {
-        if (std::abs(FindOriginalValue(x, y) - m_no_data_value) < SpatialDriver::FLOAT_BIAS)
+        if (std::fabs(FindOriginalValue(x, y) - m_no_data_value) < SpatialDriver::FLOAT_BIAS)
             return true;
         else
             return false;

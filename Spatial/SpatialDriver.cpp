@@ -6,6 +6,20 @@
 
 using namespace CREST;
 
+const char* SpatialDriver::DEFAULT_EPSG = "EPSG:4326";
+
+const double SpatialDriver::EARTH_RADIUS = 6367000;
+
+const double SpatialDriver::PI = 3.14159265359;
+
+const double SpatialDriver::FLOAT_BIAS = 1e-6;
+
+const int SpatialDriver::HOUR_TO_SECOND = 3600;
+
+const double SpatialDriver::MIN_DOUBLE = std::numeric_limits<double>::min();
+
+const double SpatialDriver::MIN_FLOAT = std::numeric_limits<float>::min();
+
 void SpatialDriver::GetCoordinates(GDALDataset *dataset, int x, int y, double &coordinate_x,
                                    double &coordinate_y)
 {

@@ -14,12 +14,12 @@ FileRasterCollection::FileRasterCollection(const std::vector<std::string> &files
     m_files = files;
 }
 
-virtual FileRasterCollection::~FileRasterCollection()
+FileRasterCollection::~FileRasterCollection()
 {
     delete m_raster;
 }
 
-virtual Raster* FileRasterCollection::operator[](int index)
+Raster* FileRasterCollection::operator[](int index)
 {
     if (index == m_index) return m_raster;
 
@@ -32,12 +32,12 @@ virtual Raster* FileRasterCollection::operator[](int index)
     return m_raster;
 }
 
-virtual int FileRasterCollection::Size() const
+int FileRasterCollection::Size() const
 {
     return m_files.size();
 }
 
-virtual FileRasterCollection& FileRasterCollection::operator<<(const std::string &file)
+FileRasterCollection& FileRasterCollection::operator<<(const std::string &file)
 {
     m_files.push_back(file);
     return *this;

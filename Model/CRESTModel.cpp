@@ -12,7 +12,7 @@ CRESTModel::CRESTModel() : m_core(nullptr), m_dem(nullptr), m_ddm(nullptr), m_fa
     GDALAllRegister();
 }
 
-virtual CRESTModel::~CRESTModel()
+CRESTModel::~CRESTModel()
 {
     delete m_core;
     delete m_dem;
@@ -32,7 +32,7 @@ bool CRESTModel::Build(const std::string &dem, const std::string &ddm, const std
 
         if (dem_dataset == nullptr || ddm_dataset == nullptr || fam_dataset == nullptr)
         {
-            //if (m_message != nullptr) *m_message << 1;
+            if (m_message != nullptr) *m_message << "DEM or DDM or FAM is null";
 
             return false;
         }
@@ -45,6 +45,8 @@ bool CRESTModel::Build(const std::string &dem, const std::string &ddm, const std
     }
     catch (...)
     {
+        if (m_message != nullptr) *m_message << "build failed";
+
         return false;
     }
 }
@@ -66,6 +68,8 @@ bool CRESTModel::Simulate(const std::vector<std::string> &precipitations,
     }
     catch (...)
     {
+        if (m_message != nullptr) *m_message << "simulate failed";
+
         return false;
     }
 }
@@ -87,6 +91,8 @@ bool CRESTModel::Result(const std::string &file, StatusResultType type)
     }
     catch (...)
     {
+        if (m_message != nullptr) *m_message << "get result failed";
+
         return false;
     }
 }

@@ -6,6 +6,7 @@
 #define CREST_CRESTMODEL_H
 
 #include <string>
+#include <ostream>
 
 #include "../Core/Core.h"
 #include "../Base/RasterCollection.h"
