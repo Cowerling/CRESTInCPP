@@ -45,6 +45,8 @@ namespace CREST {
         inline double GetInitialSoilWater() const;
         void SetInitialSoilWater(double initial_soil_water);
 
+        float* GetStatusResults(StatusResultType type) const;
+
     private:
         void FindCellFlowRoute(Cell &cell, float time_interval);
         void CaculateFlowTime(Cell &cell);
@@ -69,6 +71,8 @@ namespace CREST {
         double m_surface_reservoir_discharge;    //refers to the overland reservoir discharge multiplier.
         double m_ground_reservoir_discharge; //refers to the interflow reservoir discharge multiplier.
         double m_initial_soil_water;    //refers to the initial value of soil water.refers to the initial value of soil water.
+
+        bool m_flow_route_intialize;
 
     public:
         friend class Core;

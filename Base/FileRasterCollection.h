@@ -11,18 +11,19 @@
 #include "RasterCollection.h"
 
 namespace CREST {
-    class FileRasterCollection : RasterCollection {
+    class FileRasterCollection : public RasterCollection {
     public:
         FileRasterCollection();
         FileRasterCollection(const std::vector<std::string> &files);
+        virtual ~FileRasterCollection();
 
         virtual Raster* operator[](int index);
-        void operator<<(const std::string &file);
-
-        virtual ~FileRasterCollection();
+        virtual int Size() const;
+        FileRasterCollection& operator<<(const std::string &file);
 
     protected:
         Raster *m_raster;
+        int m_index;
         std::vector<std::string> m_files;
     };
 }

@@ -22,6 +22,7 @@ namespace CREST {
         static const double FLOAT_BIAS = 1e-6;
         static const int HOUR_TO_SECOND = 3600;
         static const double MIN_DOUBLE = std::numeric_limits<double>::min();
+        static const double MIN_FLOAT = std::numeric_limits<float>::min();
     };
 }
 

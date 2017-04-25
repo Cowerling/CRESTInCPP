@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "Cell.h"
+#include "../Spatial/SpatialDriver.h"
 
 using namespace CREST;
 
@@ -102,4 +103,27 @@ void Cell::SetSoilWater(float soil_water)
 void Cell::SetRunoff(float runoff)
 {
     m_runoff = runoff;
+}
+
+float Cell::GetStatusResult(StatusResultType type) const
+{
+    switch (type)
+    {
+        case RUNOFF:
+            return m_runoff;
+        case EVAPORATION:
+            return m_actual_evaporation;
+        case SOIL_WATER:
+            return m_soil_water;
+        case SURFACE_EXCESS:
+            return m_surface_tier.GetExcessPrecipitation();
+        case GROUND_EXCESS:
+            return m_ground_tier.GetExcessPrecipitation();
+        case SURFACE_RESERVOIR:
+            return m_surface_tier.GetReservoir();
+        case GROUND_RESERVOIR:
+            return m_ground_tier.GetReservoir();
+        default:
+            return SpatialDriver::MIN_FLOAT;
+    }
 }

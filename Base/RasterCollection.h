@@ -11,7 +11,7 @@ namespace CREST {
     class RasterCollection {
     public:
         virtual Raster* operator[](int index) = 0;
-        virtual ~RasterCollection();
+        virtual int Size() const = 0;
     };
 }
 

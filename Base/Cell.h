@@ -6,6 +6,7 @@
 #define CREST_CELL_H
 
 #include "Tier.h"
+#include "StatusResultType.h"
 
 namespace CREST {
     class Cell {
@@ -30,6 +31,7 @@ namespace CREST {
         void SetSoilWater(float soil_water);
         inline float GetRunoff() const;
         void SetRunoff(float runoff);
+        float GetStatusResult(StatusResultType type) const;
 
     protected:
         Tier m_surface_tier, m_ground_tier;

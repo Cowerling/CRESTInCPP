@@ -82,10 +82,17 @@ bool Raster::Contain(int x, int y) const
 OGRSpatialReference Raster::GetSpatialReference() const
 {
     const char *projectionRef = m_dataset->GetProjectionRef();
-    char *wkt = new char[std::strlen(projectionRef)];
+
+    int length = std::strlen(projectionRef);
+    char *wkt = new char[length + 1];
     std::strcpy(wkt, projectionRef);
+    wkt[length] = '\0';
+
     OGRSpatialReference spatial_reference;
     spatial_reference.importFromWkt(&wkt);
+    //
+    delete wkt;
+    //
 
     return spatial_reference;
 }

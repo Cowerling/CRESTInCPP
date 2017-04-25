@@ -23,7 +23,8 @@ Basin::Basin(Raster *dem) : m_cells(nullptr), m_x_resolution(0), m_y_resolution(
                             m_hydra_conductivity(6.506332),
                             m_surface_reservoir_discharge(0.357427),
                             m_ground_reservoir_discharge(0.119561),
-                            m_initial_soil_water(0.63829159)
+                            m_initial_soil_water(0.63829159),
+                            m_flow_route_intialize(false)
 {
     if (m_dem == nullptr) return;
 
@@ -109,6 +110,8 @@ void Basin::SetFlowDirection(Raster *ddm, Raster *fam)
 
 void Basin::FindCellFlowRoute(int x, int y, float time_interval)
 {
+    if (m_flow_route_intialize) return;
+
     FindCellFlowRoute(this->operator()(x, y), time_interval);
 }
 
@@ -137,7 +140,7 @@ void Basin::FindCellFlowRoute(Cell &cell, float time_interval)
             pre_ground_flow_time = ground_flow_time;
             ground_flow_time += next_cell->GetFlowTime() / m_interflow_speed_multiplier;
 
-            cell.GetGroundTier().SetDestinationTier(&next_cell->GetSurfaceTier());
+            cell.GetGroundTier().SetDestinationTier(&next_cell->GetGroundTier());
         }
 
         next_cell = next_cell->GetNextCell();
@@ -152,6 +155,8 @@ void Basin::FindCellFlowRoute(Cell &cell, float time_interval)
         cell.GetGroundTier().SetWaterAccessRatio(1 - (time_interval - pre_ground_flow_time) / (ground_flow_time - pre_ground_flow_time));
     else
         cell.GetGroundTier().SetWaterAccessRatio(0);
+
+    m_flow_route_intialize = true;
 }
 
 void Basin::CaculateFlowTime(Cell &cell)
@@ -268,4 +273,20 @@ void Basin::SetGroundReservoirDischarge(double ground_reservoir_discharge)
 void Basin::SetInitialSoilWater(double initial_soil_water)
 {
     m_initial_soil_water = initial_soil_water;
+}
+
+float* Basin::GetStatusResults(StatusResultType type) const
+{
+    float *status_results = new float[GetXSize() * GetYSize()];
+
+    for (int i = 0; i < GetYSize(); i++)
+    {
+        for (int j = 0; j < GetXSize(); j++)
+        {
+            const Cell &cell = this->operator()(j, GetYSize() - 1 - i);
+            status_results[i * GetXSize() + j] = cell.GetStatusResult(type);
+        }
+    }
+
+    return status_results;
 }

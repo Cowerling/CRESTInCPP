@@ -13,7 +13,7 @@ namespace CREST {
     public:
         virtual ~Raster();
 
-        static Raster* CreateRaster(GDALDataset *dataset, int x_extent = 200, int y_extent = 200);
+        static Raster* CreateRaster(GDALDataset *dataset, int x_extent = INIT_X_EXTENT, int y_extent = INIT_Y_EXTENT);
         virtual double FindValue(int x, int y) const = 0;
         virtual double SearchValue(double coordinate_x, double coordinate_y) const = 0;
         void SetExtent(int x_extent, int y_extent);
@@ -40,6 +40,10 @@ namespace CREST {
         int m_x_size, m_y_size;
         double m_geo_transform[6];
         double m_no_data_value;
+
+    public:
+        const static int INIT_X_EXTENT = 200;
+        const static int INIT_Y_EXTENT = 200;
     };
 
     inline int Raster::GetXSize() const
