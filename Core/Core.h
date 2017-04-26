@@ -9,9 +9,11 @@
 #include "../Base/RasterCollection.h"
 
 namespace CREST {
+    typedef void (*ProgressReport)(const std::string&, int);
+
     class Core {
     public:
-        Core(Raster *dem, Raster *ddm, Raster *fam);
+        Core(Raster *dem, Raster *ddm, Raster *fam, ProgressReport progress_report = nullptr);
 
     public:
         void Caculate(RasterCollection &precipitations, RasterCollection &potential_evaporations, float time_interval);
@@ -22,6 +24,7 @@ namespace CREST {
 
     protected:
         Basin *m_basin;
+        ProgressReport m_progress_report;
     };
 }
 

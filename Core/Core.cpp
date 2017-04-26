@@ -7,10 +7,11 @@
 
 using namespace CREST;
 
-Core::Core(Raster *dem, Raster *ddm, Raster *fam) : m_basin(nullptr)
+Core::Core(Raster *dem, Raster *ddm, Raster *fam, ProgressReport progress_report) : m_basin(nullptr)
 {
     m_basin = new Basin(dem);
     m_basin->SetFlowDirection(ddm, fam);
+    m_progress_report = progress_report;
 }
 
 void Core::SingleCaculate(Raster *precipitation, Raster *potential_evaporation, float time_interval)
@@ -19,12 +20,8 @@ void Core::SingleCaculate(Raster *precipitation, Raster *potential_evaporation, 
     if (precipitation == nullptr) throw std::runtime_error("precipitation is null");
     if (potential_evaporation == nullptr) throw std::runtime_error("potential evaporation is null");
 
-    OGRSpatialReference spatial_reference = m_basin->m_dem->GetSpatialReference(),
-            p_spatial_reference = precipitation->GetSpatialReference(),
-            pe_spatial_reference = potential_evaporation->GetSpatialReference();
-
-    bool is_same_spatial_reference_p = spatial_reference.IsSame(&p_spatial_reference),
-            is_same_spatial_reference_pe = spatial_reference.IsSame(&pe_spatial_reference);
+    bool is_same_scope_p = m_basin->m_dem->IsSameScope(*precipitation),
+            is_same_scope_pe = m_basin->m_dem->IsSameScope(*potential_evaporation);
 
     for (int x = 0; x < m_basin->GetXSize(); x++)
     {
@@ -34,7 +31,7 @@ void Core::SingleCaculate(Raster *precipitation, Raster *potential_evaporation, 
 
             double precipitation_value, potential_evaporation_value;
 
-            if (is_same_spatial_reference_p)
+            if (is_same_scope_p)
                 precipitation_value = precipitation->FindValue(x, y) * time_interval;
             else
             {
@@ -44,7 +41,7 @@ void Core::SingleCaculate(Raster *precipitation, Raster *potential_evaporation, 
                 precipitation_value = precipitation->SearchValue(coordinate_x, coordinate_y) * time_interval;
             }
 
-            if (is_same_spatial_reference_pe)
+            if (is_same_scope_pe)
                 potential_evaporation->FindValue(x, y) * time_interval;
             else
             {
@@ -98,6 +95,8 @@ void Core::Caculate(RasterCollection &precipitations, RasterCollection &potentia
 
     for (int i = 0; i < precipitations.Size(); i++)
     {
+        if (m_progress_report != nullptr) m_progress_report("caculate", (int)(i * 100.0 / precipitations.Size()));
+
         SingleCaculate(precipitations[i], potential_evaporations[i], time_interval);
     }
 }

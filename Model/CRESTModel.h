@@ -17,14 +17,14 @@ namespace CREST {
         CRESTModel();
         virtual ~CRESTModel();
 
-        bool Build(const std::string &dem, const std::string &ddm, const std::string &fam, std::ostream *message = nullptr);
-        bool Simulate(const std::vector<std::string> &precipitations, const std::vector<std::string> &potential_evaporations, float time_interval);
+        bool Build(const std::string &dem, const std::string &ddm, const std::string &fam, ProgressReport progress_report = nullptr);
+        bool Simulate(const std::vector<std::string> &precipitations, const std::vector<std::string> &potential_evaporations, float time_interval, bool reset = false);
         bool Result(const std::string &file, StatusResultType type);
 
     protected:
         Raster *m_dem, *m_ddm, *m_fam;
         Core *m_core;
-        std::ostream *m_message;
+        ProgressReport m_progress_report;
     };
 }
 

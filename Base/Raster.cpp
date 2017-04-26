@@ -2,6 +2,7 @@
 // Created by cowerling on 17-4-19.
 //
 #include <cstring>
+#include <cmath>
 
 #include "Raster.h"
 #include "ActualRaster.h"
@@ -91,7 +92,7 @@ OGRSpatialReference Raster::GetSpatialReference() const
     OGRSpatialReference spatial_reference;
     spatial_reference.importFromWkt(&wkt);
     //
-    delete wkt;
+    //delete wkt;
     //
 
     return spatial_reference;
@@ -100,4 +101,24 @@ OGRSpatialReference Raster::GetSpatialReference() const
 void Raster::GetCoordinates(int x, int y, double &coordinate_x, double &coordinate_y)
 {
     SpatialDriver::GetCoordinates(m_geo_transform, GetYSize(), x, y, coordinate_x, coordinate_y);
+}
+
+bool Raster::IsSameScope(const Raster &raster) const
+{
+    OGRSpatialReference spatial_reference = raster.GetSpatialReference();
+    bool is_same_spatial_reference = this->GetSpatialReference().IsSame(&spatial_reference);
+
+    bool is_geo_transform = false;
+    for (int i = 0; i < 6; i++)
+    {
+        if (std::fabs(raster.m_geo_transform[i] - m_geo_transform[i]) > SpatialDriver::FLOAT_BIAS)
+        {
+            is_geo_transform = false;
+            break;
+        }
+    }
+
+    bool is_same_size = raster.GetXSize() == GetXSize() && raster.GetYSize() == GetYSize();
+
+    return is_same_spatial_reference && is_geo_transform && is_same_size;
 }

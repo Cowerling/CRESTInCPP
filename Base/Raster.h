@@ -23,6 +23,7 @@ namespace CREST {
         OGRSpatialReference GetSpatialReference() const;
         virtual bool IsNoData(int x, int y) = 0;
         void GetCoordinates(int x, int y, double &coordinate_x, double &coordinate_y);
+        bool IsSameScope(const Raster &raster) const;
 
     protected:
         Raster(GDALDataset *dataset, GDALDataType data_type);

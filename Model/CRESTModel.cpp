@@ -7,7 +7,7 @@
 
 using namespace CREST;
 
-CRESTModel::CRESTModel() : m_core(nullptr), m_dem(nullptr), m_ddm(nullptr), m_fam(nullptr), m_message(nullptr)
+CRESTModel::CRESTModel() : m_core(nullptr), m_dem(nullptr), m_ddm(nullptr), m_fam(nullptr), m_progress_report(nullptr)
 {
     GDALAllRegister();
 }
@@ -20,11 +20,11 @@ CRESTModel::~CRESTModel()
     delete m_fam;
 }
 
-bool CRESTModel::Build(const std::string &dem, const std::string &ddm, const std::string &fam, std::ostream *message)
+bool CRESTModel::Build(const std::string &dem, const std::string &ddm, const std::string &fam, ProgressReport progress_report)
 {
     try
     {
-        m_message = message;
+        m_progress_report = progress_report;
 
         GDALDataset *dem_dataset = static_cast<GDALDataset*>(GDALOpen(dem.c_str(), GA_ReadOnly)),
                 *ddm_dataset = static_cast<GDALDataset*>(GDALOpen(ddm.c_str(), GA_ReadOnly)),
@@ -32,7 +32,7 @@ bool CRESTModel::Build(const std::string &dem, const std::string &ddm, const std
 
         if (dem_dataset == nullptr || ddm_dataset == nullptr || fam_dataset == nullptr)
         {
-            if (m_message != nullptr) *m_message << "DEM or DDM or FAM is null";
+            if (m_progress_report != nullptr) (*m_progress_report)("DEM or DDM or FAM is null", 0);
 
             return false;
         }
@@ -45,19 +45,24 @@ bool CRESTModel::Build(const std::string &dem, const std::string &ddm, const std
     }
     catch (...)
     {
-        if (m_message != nullptr) *m_message << "build failed";
+        if (m_progress_report != nullptr) (*m_progress_report)("build failed", 0);
 
         return false;
     }
 }
 
 bool CRESTModel::Simulate(const std::vector<std::string> &precipitations,
-                          const std::vector<std::string> &potential_evaporations, float time_interval)
+                          const std::vector<std::string> &potential_evaporations, float time_interval, bool reset)
 {
     try
     {
-        delete  m_core;
-        m_core = new Core(m_dem, m_ddm, m_fam);
+        if (reset)
+        {
+            delete m_core;
+            m_core = nullptr;
+        }
+
+        if (m_core == nullptr) m_core = new Core(m_dem, m_ddm, m_fam, m_progress_report);
 
         FileRasterCollection precipitation_collection = FileRasterCollection(precipitations),
                 potential_evaporation_collection = FileRasterCollection(potential_evaporations);
@@ -68,7 +73,7 @@ bool CRESTModel::Simulate(const std::vector<std::string> &precipitations,
     }
     catch (...)
     {
-        if (m_message != nullptr) *m_message << "simulate failed";
+        if (m_progress_report != nullptr) (*m_progress_report)("simulate failed", 0);
 
         return false;
     }
@@ -91,7 +96,7 @@ bool CRESTModel::Result(const std::string &file, StatusResultType type)
     }
     catch (...)
     {
-        if (m_message != nullptr) *m_message << "get result failed";
+        if (m_progress_report != nullptr) (*m_progress_report)("get result failed", 0);
 
         return false;
     }
