@@ -24,6 +24,7 @@ Basin::Basin(Raster *dem) : m_cells(nullptr), m_x_resolution(0), m_y_resolution(
                             m_surface_reservoir_discharge(0.357427),
                             m_ground_reservoir_discharge(0.119561),
                             m_initial_soil_water(0.63829159),
+                            m_interflow_speed_multiplier(0.869404),
                             m_flow_route_intialize(false)
 {
     if (m_dem == nullptr) return;
