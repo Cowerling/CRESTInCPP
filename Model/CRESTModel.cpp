@@ -43,6 +43,12 @@ bool CRESTModel::Build(const std::string &dem, const std::string &ddm, const std
 
         return true;
     }
+    catch (const std::runtime_error &exception)
+    {
+        if (m_progress_report != nullptr) (*m_progress_report)("build failed: " + std::string(exception.what()), 0);
+
+        return false;
+    }
     catch (...)
     {
         if (m_progress_report != nullptr) (*m_progress_report)("build failed", 0);
@@ -71,6 +77,12 @@ bool CRESTModel::Simulate(const std::vector<std::string> &precipitations,
 
         return true;
     }
+    catch (const std::runtime_error &exception)
+    {
+        if (m_progress_report != nullptr) (*m_progress_report)("build failed: " + std::string(exception.what()), 0);
+
+        return false;
+    }
     catch (...)
     {
         if (m_progress_report != nullptr) (*m_progress_report)("simulate failed", 0);
@@ -93,6 +105,12 @@ bool CRESTModel::Result(const std::string &file, StatusResultType type)
         m_core->GetResult(dataset, type);
 
         return true;
+    }
+    catch (const std::runtime_error &exception)
+    {
+        if (m_progress_report != nullptr) (*m_progress_report)("build failed: " + std::string(exception.what()), 0);
+
+        return false;
     }
     catch (...)
     {

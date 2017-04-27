@@ -83,7 +83,7 @@ int Basin::GetYSize() const
 
 const Cell& Basin::operator()(int x, int y) const
 {
-    return (*this)(x, y);
+    return m_cells[GetYSize() - 1 - y][x];
 }
 
 Cell& Basin::operator()(int x, int y)
@@ -101,7 +101,7 @@ Cell& Basin::operator()(int x, int y)
 
 void Basin::SetFlowDirection(Raster *ddm, Raster *fam)
 {
-    if (ddm->GetXSize() != GetXSize() || ddm->GetYSize() != GetYSize() || fam->GetXSize() || GetXSize() || fam->GetYSize() != GetYSize())
+    if (ddm->GetXSize() != GetXSize() || ddm->GetYSize() != GetYSize() || fam->GetXSize() != GetXSize() || fam->GetYSize() != GetYSize())
         throw std::runtime_error("size not match dem");
 
     m_ddm = ddm;

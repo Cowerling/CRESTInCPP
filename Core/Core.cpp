@@ -42,7 +42,7 @@ void Core::SingleCaculate(Raster *precipitation, Raster *potential_evaporation, 
             }
 
             if (is_same_scope_pe)
-                potential_evaporation->FindValue(x, y) * time_interval;
+                potential_evaporation_value = potential_evaporation->FindValue(x, y) * time_interval;
             else
             {
                 double coordinate_x, coordinate_y;
@@ -95,9 +95,9 @@ void Core::Caculate(RasterCollection &precipitations, RasterCollection &potentia
 
     for (int i = 0; i < precipitations.Size(); i++)
     {
-        if (m_progress_report != nullptr) m_progress_report("caculate", (int)(i * 100.0 / precipitations.Size()));
-
         SingleCaculate(precipitations[i], potential_evaporations[i], time_interval);
+
+        if (m_progress_report != nullptr) m_progress_report("caculate", (int)((i + 1) * 100.0 / precipitations.Size()));
     }
 }
 

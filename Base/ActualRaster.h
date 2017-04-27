@@ -53,7 +53,7 @@ namespace CREST {
             if (m_x_search_size > m_x_size) m_x_search_size = m_x_size;
             if (m_y_search_size > m_y_size) m_y_search_size = m_y_size;
 
-            int x_offset = m_origin_x, y_offset = m_y_size - 1 - m_origin_y - m_y_search_size;
+            int x_offset = m_origin_x, y_offset = m_y_size - m_origin_y - m_y_search_size;
 
             delete[] m_data;
             m_data = new T[m_x_search_size * m_y_search_size];

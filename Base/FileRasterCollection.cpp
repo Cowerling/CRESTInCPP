@@ -25,7 +25,7 @@ Raster* FileRasterCollection::operator[](int index)
 
     GDALDataset *dataset = static_cast<GDALDataset*>(GDALOpen(m_files[index].c_str(), GA_ReadOnly));
 
-    if (dataset) return m_raster = nullptr;
+    if (dataset == nullptr) return m_raster = nullptr;
 
     m_raster = Raster::CreateRaster(dataset);
 

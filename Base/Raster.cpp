@@ -108,7 +108,7 @@ bool Raster::IsSameScope(const Raster &raster) const
     OGRSpatialReference spatial_reference = raster.GetSpatialReference();
     bool is_same_spatial_reference = this->GetSpatialReference().IsSame(&spatial_reference);
 
-    bool is_geo_transform = false;
+    bool is_geo_transform = true;
     for (int i = 0; i < 6; i++)
     {
         if (std::fabs(raster.m_geo_transform[i] - m_geo_transform[i]) > SpatialDriver::FLOAT_BIAS)

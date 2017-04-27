@@ -12,7 +12,7 @@ const double SpatialDriver::EARTH_RADIUS = 6367000;
 
 const double SpatialDriver::PI = 3.14159265359;
 
-const double SpatialDriver::FLOAT_BIAS = 1e-6;
+const double SpatialDriver::FLOAT_BIAS = 1e-3;
 
 const int SpatialDriver::HOUR_TO_SECOND = 3600;
 
